@@ -6,7 +6,7 @@ const LoginScreen = ({ navigation }) => {
   return (
     <View>
       <Text>Login Screen</Text>
-      <Text style={style.header}>Hi-FI Ready to work!</Text>
+      <Text style={style.header}>This is login page </Text>
       <Button
         title="Login"
         onPress={() => navigation.navigate('Main')}
