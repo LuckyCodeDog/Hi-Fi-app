@@ -1,21 +1,18 @@
-import React from 'react'
-import { View, Text,StyleSheet } from 'react-native'
+import React from 'react';
+import { View, Text,Button,Navigator } from 'react-native'
+import { NavigationContainer } from '@react-navigation/native';
+import MainStackNavigator from './navigators/MainStackNavigator';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-function App() {
-  return (
-    <View>
-        <Text style={style.text}>
-            Hi-Fi
-            Ready to work!
-        </Text>
-    </View>
-  )
-}
 
-const style = StyleSheet.create({
-    text:{
-        fontSize:25,
-        textAlign:'center'
-    }
-})
-export default App
+const App = () => {
+    return (
+        <NavigationContainer>
+            <MainStackNavigator/>
+        </NavigationContainer>
+      
+    );
+};
+
+export default App;
