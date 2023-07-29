@@ -1,6 +1,6 @@
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'; // remove PROVIDER_GOOGLE import if not using Google Maps
 import { StyleSheet ,View } from 'react-native';
-
+import SlideUpMenu from './SlideUpMenu';
 
 const styles = StyleSheet.create({
  container: {
@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
 });
 
 const Map =  () => (
-   <View style={styles.container}>
      <MapView
        provider={PROVIDER_GOOGLE} // remove if not using Google Maps
        style={styles.map}
@@ -28,7 +27,6 @@ const Map =  () => (
        }}
      >
      </MapView>
-   </View>
 );
 
 export default Map
