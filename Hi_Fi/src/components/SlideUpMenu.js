@@ -12,8 +12,6 @@ const SlideUpMenu = () => {
       return Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
     },
     onPanResponderMove: (_, gestureState) => {
-      // Manually update the panY value
-      //panY.setValue(Math.max(0, gestureState.dy));
     },
     onPanResponderRelease: (_, gestureState) => {
       const velocityThreshold = 0.3; // Tweak this value to adjust sensitivity

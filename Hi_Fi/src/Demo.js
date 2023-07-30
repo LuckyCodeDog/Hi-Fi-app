@@ -3,30 +3,24 @@ import { View, Text, StyleSheet, PanResponder, Animated } from 'react-native';
 import MapView from 'react-native-maps';
 
 const Demo = () => {
-  const panY = useRef(new Animated.Value(0)).current;
+  const panY = useRef(new Animated.Value(650)).current;
   const screenHeight = useRef(0);
-  const hiddenHeight = 700; // 菜单隐藏的高度
+  const hiddenHeight = 650; // 菜单隐藏的高度
 
   const panResponder = PanResponder.create({
     onMoveShouldSetPanResponder: (_, gestureState) => {
-      // 设置在垂直方向上移动时才响应手势
       return Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
     },
     onPanResponderMove: (_, gestureState) => {
-      // 更新panY值，限制在0到屏幕高度之间
     },
     onPanResponderRelease: (_, gestureState) => {
-      // 根据手势滑动的距离，判断是否要显示或隐藏菜单
       if (gestureState.dy < -50) {
-        // 向上滑动超过50的距离，完全显示菜单
-        console.log('@')
         Animated.timing(panY, {
           toValue: 0,
           duration: 200,
           useNativeDriver: false,
         }).start();
-      } else if(gestureState.dy >50) {
-        // 滑动距离较小，恢复原始状态
+      } else if (gestureState.dy > 50) {
         Animated.timing(panY, {
           toValue: hiddenHeight,
           duration: 200,
@@ -40,14 +34,14 @@ const Demo = () => {
     <View
       style={styles.container}
     >
-      <MapView  initialRegion={{
-         latitude: -43.64532061931982,
-         longitude: 172.4642259485763,
-         latitudeDelta: 0.015,
-         longitudeDelta: 0.0121,
-       }}
-       style={{height:"100%",width:"100%"}}
-       >
+      <MapView initialRegion={{
+        latitude: -43.64532061931982,
+        longitude: 172.4642259485763,
+        latitudeDelta: 0.015,
+        longitudeDelta: 0.0121,
+      }}
+        style={{ height: "100%", width: "100%" }}
+      >
       </MapView>
       <Animated.View
         {...panResponder.panHandlers}
@@ -64,15 +58,15 @@ const Demo = () => {
       >
         <Text>Slide up menu content</Text>
         <Text>1</Text>
-      <Text>1</Text>
-      <Text>1</Text>
-      <Text>1</Text>
-      <Text>1</Text>
-      <Text>1</Text>
-      <Text>1</Text>
-   
+        <Text>1</Text>
+        <Text>1</Text>
+        <Text>1</Text>
+        <Text>1</Text>
+        <Text>1</Text>
+        <Text>1</Text>
+
       </Animated.View>
-    
+
     </View>
   );
 };
@@ -84,7 +78,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   menu: {
-    backgroundColor: 'grey',
+    backgroundColor: 'white',
     padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -94,10 +88,10 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 5,
     position: 'absolute',
-    bottom: 0,
+    top: 0,
     left: 0,
     right: 0,
-    height:"100%",
+    height: "100%",
   },
 });
 
