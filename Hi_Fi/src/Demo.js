@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { View, Text, StyleSheet, PanResponder, Animated } from 'react-native';
-import MapView from 'react-native-maps';
-
+import MapView, { Marker } from 'react-native-maps';
+import WifiMapMarker from './components/WifiMapMarker';
 const Demo = () => {
   const panY = useRef(new Animated.Value(650)).current;
   const screenHeight = useRef(0);
@@ -29,19 +29,56 @@ const Demo = () => {
       }
     },
   });
+  const initialRegion = {
+    latitude: -43.64532061931982,
+    longitude: 172.4642259485763,
+    latitudeDelta: 0.015,
+    longitudeDelta: 0.0221,
+  }
 
+  const wifiList = [
+    {
+      name:"wifi1",
+      coordinate: {
+        latitude: -43.64532061931982,
+        longitude: 172.4642259485763
+      }
+    },
+    {
+      name:"wifi2",
+      coordinate: {
+        latitude: -43.64231213421989,
+        longitude: 172.47189882630357
+      }
+    },
+    {
+      name:"wifi3",
+      coordinate: {
+        latitude: -43.64395447295253,
+        longitude: 172.472956226081
+      }
+    },
+    {
+      name:"wifi4",
+      coordinate: {
+        latitude: -43.647430468722135,
+        longitude: 172.46338221035705
+      }
+    },
+
+  ]
   return (
     <View
       style={styles.container}
     >
-      <MapView initialRegion={{
-        latitude: -43.64532061931982,
-        longitude: 172.4642259485763,
-        latitudeDelta: 0.015,
-        longitudeDelta: 0.0121,
-      }}
+      <MapView initialRegion={initialRegion}
         style={{ height: "100%", width: "100%" }}
       >
+        {wifiList.map((wifi,index)=>{
+          return <WifiMapMarker key={index} coordinate={wifi.coordinate} ></WifiMapMarker>
+        })}
+ 
+       
       </MapView>
       <Animated.View
         {...panResponder.panHandlers}
@@ -57,14 +94,6 @@ const Demo = () => {
         ]}
       >
         <Text>Slide up menu content</Text>
-        <Text>1</Text>
-        <Text>1</Text>
-        <Text>1</Text>
-        <Text>1</Text>
-        <Text>1</Text>
-        <Text>1</Text>
-        <Text>1</Text>
-
       </Animated.View>
 
     </View>
