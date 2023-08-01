@@ -120,7 +120,6 @@ const ExploreScreen = () => {
     if (Platform.OS === 'ios') {
       x = x - SPACING_FOR_CARD_INSET;
     }
-
     _scrollView.current.scrollTo({x: x, y: 0, animated: true});
   }
 
