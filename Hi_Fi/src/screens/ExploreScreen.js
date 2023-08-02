@@ -12,12 +12,8 @@ import {
   Platform,
 } from "react-native";
 import MapView, {PROVIDER_GOOGLE} from "react-native-maps";
-
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Fontisto from 'react-native-vector-icons/Fontisto';
 import Icon from 'react-native-vector-icons/FontAwesome'
-
 import { markers, mapDarkStyle, mapStandardStyle } from '../model/mapData';
 import StarRating from '../components/StarRating';
 
@@ -30,7 +26,6 @@ const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
 const ExploreScreen = () => {
   const theme = useTheme();
-
   const initialMapState = {
     markers,
     categories: [
@@ -97,31 +92,31 @@ const ExploreScreen = () => {
     });
   });
 
-  const interpolations = state.markers.map((marker, index) => {
-    const inputRange = [
-      (index - 1) * CARD_WIDTH,
-      index * CARD_WIDTH,
-      ((index + 1) * CARD_WIDTH),
-    ];
+  // const interpolations = state.markers.map((marker, index) => {
+  //   const inputRange = [
+  //     (index - 1) * CARD_WIDTH,
+  //     index * CARD_WIDTH,
+  //     ((index + 1) * CARD_WIDTH),
+  //   ];
 
-    const scale = mapAnimation.interpolate({
-      inputRange,
-      outputRange: [1, 1.5, 1],
-      extrapolate: "clamp"
-    });
+  //   const scale = mapAnimation.interpolate({
+  //     inputRange,
+  //     outputRange: [1, 1.5, 1],
+  //     extrapolate: "clamp"
+  //   });
 
-    return { scale };
-  });
+  //   return { scale };
+  // });
 
-  const onMarkerPress = (mapEventData) => {
-    const markerID = mapEventData._targetInst.return.key;
+  // const onMarkerPress = (mapEventData) => {
+  //   const markerID = mapEventData._targetInst.return.key;
 
-    let x = (markerID * CARD_WIDTH) + (markerID * 20); 
-    if (Platform.OS === 'ios') {
-      x = x - SPACING_FOR_CARD_INSET;
-    }
-    _scrollView.current.scrollTo({x: x, y: 0, animated: true});
-  }
+  //   let x = (markerID * CARD_WIDTH) + (markerID * 20); 
+  //   if (Platform.OS === 'ios') {
+  //     x = x - SPACING_FOR_CARD_INSET;
+  //   }
+  //   _scrollView.current.scrollTo({x: x, y: 0, animated: true});
+  // }
 
   const _map = React.useRef(null);
   const _scrollView = React.useRef(null);
@@ -157,7 +152,7 @@ const ExploreScreen = () => {
         })} */}
       </MapView>
 
-      <View style={styles.searchBox}>
+      {/* <View style={styles.searchBox}>
         <TextInput 
           placeholder="Search here"
           placeholderTextColor="#000"
@@ -165,9 +160,9 @@ const ExploreScreen = () => {
           style={{flex:1,padding:0}}
         />
         <Ionicons name="accessibility" size={20} />
-      </View>
+      </View> */}
 
-      <ScrollView
+      {/* <ScrollView
         horizontal
         scrollEventThrottle={1}
         showsHorizontalScrollIndicator={false}
@@ -189,10 +184,9 @@ const ExploreScreen = () => {
             <Text>{category.name}</Text>
           </TouchableOpacity>
         ))}
-      </ScrollView>
+      </ScrollView> */}
 
       <Animated.ScrollView
-        ref={_scrollView}
         horizontal
         pagingEnabled
         scrollEventThrottle={1}
@@ -200,15 +194,15 @@ const ExploreScreen = () => {
         snapToInterval={CARD_WIDTH + 20}
         snapToAlignment="center"
         style={styles.scrollView}
-        contentInset={{
-          top: 0,
-          left: SPACING_FOR_CARD_INSET,
-          bottom: 0,
-          right: SPACING_FOR_CARD_INSET
-        }}
-        contentContainerStyle={{
-          paddingHorizontal: Platform.OS === 'android' ? SPACING_FOR_CARD_INSET : 0
-        }}
+        // contentInset={{
+        //   top: 0,
+        //   left: SPACING_FOR_CARD_INSET,
+        //   bottom: 0,
+        //   right: SPACING_FOR_CARD_INSET
+        // }}
+        // contentContainerStyle={{
+        //   paddingHorizontal: Platform.OS === 'android' ? SPACING_FOR_CARD_INSET : 0
+        // }}
         onScroll={Animated.event(
           [
             {

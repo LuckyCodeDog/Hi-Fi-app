@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { StyleSheet } from 'react-native'
 import ExploreScreen from '../screens/ExploreScreen'
 import Demo from '../screens/Demo'
-
+import DemoScreen from '../screens/DemoScreen'
 const Tab = createBottomTabNavigator()
 
 function BottomTabNavigator() {
@@ -18,10 +18,9 @@ function BottomTabNavigator() {
         {name:'Find Wifi', component : FindWifiScreen,icon: 'wifi'},
         // {name: 'My Nodes', component:ExploreScreen, icon:"globe"},
         {name:'Rewards', component:Demo, icon:'star'},
-        {name:'Wallet', component:WalletScreen,icon:'credit-card'},
+        {name:'Wallet', component:DemoScreen,icon:'credit-card'},
         {name:"Setting" ,component:SettingScreen,icon:"gear"}
     ]
-
 
   return (
     <Tab.Navigator>
