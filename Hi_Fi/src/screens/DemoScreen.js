@@ -58,43 +58,90 @@ const DemoScreen = () => {
     const [state, setState] = useState(initialMapState)
     let mapIndex = 0;
     let mapAnimation = new Animated.Value(0);
+    const _map = useRef(null)
+    useEffect(() => {
+        mapAnimation.addListener(({ value }) => {
+
+            let index = Math.floor(value / CARD_WIDTH+0.5 ); 
+            if(index>=state.markers.length){
+                index =state.markers.length
+            }
+
+            if(index<0){
+                index=0
+            }
+
+            clearTimeout()
+
+            // if(mapIndex!=index){
+            //     mapIndex =index
+            //     const {coordinate} = state.markers[index]
+            //     _map.current.animateToRegion(
+            //         {
+            //         ...coordinate,
+            //         latitudeDelta: state.region.latitudeDelta,
+            //         longitudeDelta: state.region.longitudeDelta,
+            //         }
+            //     )
+
+            // }
+            const regionTimeout = setTimeout(() => {
+                if( mapIndex !== index ) {
+                  mapIndex = index;
+                  const { coordinate } = state.markers[index];
+                  _map.current.animateToRegion(
+                    {
+                      ...coordinate,
+                      latitudeDelta: state.region.latitudeDelta,
+                      longitudeDelta: state.region.longitudeDelta,
+                    },
+                    350
+                  );
+                }
+              }, 10);
+        })
+        
+    })
+
+
     const interpolations = state.markers.map((marker, index) => {
         const inputRange = [
-          (index - 1) * CARD_WIDTH,
-          index * CARD_WIDTH,
-          ((index + 1) * CARD_WIDTH),
+            (index - 1) * CARD_WIDTH,
+            index * CARD_WIDTH,
+            ((index + 1) * CARD_WIDTH),
         ];
         const scale = mapAnimation.interpolate({
-          inputRange,
-          outputRange: [1, 1.5, 1],
-          extrapolate: "clamp"
+            inputRange,
+            outputRange: [1, 1.5, 1],
+            extrapolate: "clamp"
         });
-    
+
         return { scale };
-      });
-    
+    });
+
     return (
         <View style={styles.container}>
-            <MapView style={styles.container} initialRegion={state.region}> 
+            <MapView ref={_map} style={styles.container} initialRegion={state.region}>
             </MapView>
-            <Animated.ScrollView 
-            horizontal
-            style={styles.scrollView}
-            scrollEventThrottle={1}
-            pagingEnabled
-            snapToAlignment='center'
-            onScroll={Animated.event(
-                [
-                  {
-                    nativeEvent: {
-                      contentOffset: {
-                        x: mapAnimation,
-                      }
-                    },
-                  },
-                ],
-                {useNativeDriver: true}
-              )}
+            <Animated.ScrollView
+                horizontal
+                style={styles.scrollView}
+                scrollEventThrottle={1}
+                showsHorizontalScrollIndicator={false}
+                pagingEnabled
+                snapToAlignment='center'
+                onScroll={Animated.event(
+                    [
+                        {
+                            nativeEvent: {
+                                contentOffset: {
+                                    x: mapAnimation,
+                                }
+                            }
+                        }
+                    ],
+                    { useNativeDriver: true }
+                )}
             >
 
                 {/* render cars */}

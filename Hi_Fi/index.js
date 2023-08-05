@@ -7,4 +7,5 @@ import {name as appName} from './app.json';
 import App from './src/App';
 import ExploreScreen from './src/screens/ExploreScreen';
 import AnimationDemo from './src/AnimationDemo';
-AppRegistry.registerComponent(appName, () => AnimationDemo);
+import AnimatedEventExample from './src/AnimationDemo2';
+AppRegistry.registerComponent(appName, () => App);

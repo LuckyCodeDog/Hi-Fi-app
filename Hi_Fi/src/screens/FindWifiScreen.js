@@ -6,7 +6,6 @@ import ExploreScreen from './ExploreScreen'
 function FindWifiScreen() {
     return (
             <ExploreScreen></ExploreScreen>
-    
     )
 }
 
