@@ -9,7 +9,7 @@ const WifiMapMarker =(props) =>{
     // console.log(props.coordinate)
   })
   return (
-    <Marker  identifier ={props.id.toString()} coordinate={props.coordinate} onPress={props.onPressMarker}>
+    <Marker  identifier ={props.id==undefined?null:props.id.toString()} coordinate={props.coordinate} onPress={props.onPressMarker}>
       <Animated.View  style={[styles.view,{backgroundColor:props.color}]}  > 
         <Icon name='wifi' size={25} color={"white"} style={styles.icon} ></Icon>
       </Animated.View>
