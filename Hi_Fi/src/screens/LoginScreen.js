@@ -101,5 +101,3 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
-
-export default LoginScreen;
