@@ -10,6 +10,8 @@ import {
   TouchableOpacity,
   Dimensions,
   Platform,
+  Keyboard,
+  TouchableWithoutFeedback
 } from "react-native";
 import { SelectList } from 'react-native-dropdown-select-list';
 import MapView, { Marker } from 'react-native-maps';
@@ -24,7 +26,7 @@ const CARD_WIDTH = width * 0.8
 const SPACE_FOR_CARD_INSET = CARD_WIDTH * 0.1 - 10
 const Padding = (width - CARD_WIDTH) / 2
 
-const FindWifiScreen = ({navigation}) => {
+const FindWifiScreen = ({ navigation }) => {
   // get from backend 
   const initData = {
     initialRegion: {
@@ -44,7 +46,7 @@ const FindWifiScreen = ({navigation}) => {
         }
       },
       {
-        id :1 ,
+        id: 1,
         name: "wifi2",
         coordinate: {
           latitude: -43.64231213421989,
@@ -71,8 +73,8 @@ const FindWifiScreen = ({navigation}) => {
     ]
   }
 
-  const route =useRoute()
-  
+  const route = useRoute()
+
   const [state, setState] = useState(initData)
   const [search, setSearch] = useState(null)
   const _map = useRef(null)
@@ -82,15 +84,15 @@ const FindWifiScreen = ({navigation}) => {
   let mapAnimation = new Animated.Value(0)
 
   //listen the wifiname from searchScreen and scroll to the card
-  useEffect(()=>{
-    if(route.params!==undefined){
-      let {wifiId} = route.params
+  useEffect(() => {
+    if (route.params !== undefined) {
+      let { wifiId } = route.params
       let x = (wifiId * CARD_WIDTH - 40);
       _scrollView.current.scrollTo({ x: x, y: 0, animated: true });
     }
-  },[route])
+  }, [route])
 
-  
+
   useEffect(
     () => {
       mapAnimation.addListener(
@@ -152,24 +154,22 @@ const FindWifiScreen = ({navigation}) => {
 
 
   // need to consider the scale
-  const getSearchData = ()=>{
-      const dataList =  state.wifiList.map((wifi,index)=>{
-            return {key:index, value:wifi.name}
-        })
+  const getSearchData = () => {
+    const dataList = state.wifiList.map((wifi, index) => {
+      return { key: index, value: wifi.name }
+    })
 
-      return dataList
+    return dataList
   }
 
-  
-  const navigateToSearchScreen=()=>{
-      navigation.navigate("SearchScreen",{wifiList:state.wifiList})
+
+  const navigateToSearchScreen = () => {
+    navigation.navigate("SearchScreen", { wifiList: state.wifiList })
   }
 
 
   return (
-    <View
-      style={styles.container}
-    >
+    <View style={styles.container} >
 
       <MapView initialRegion={state.initialRegion}
         style={styles.map}
@@ -182,7 +182,10 @@ const FindWifiScreen = ({navigation}) => {
 
 
       <View style={styles.searchBar}>
-        <SearchBar lightTheme={true} round={true} onPressIn={navigateToSearchScreen}></SearchBar>
+        <TouchableWithoutFeedback>
+          <SearchBar lightTheme={true} round={true} onPress={()=>{Keyboard.dismiss()}} onPressIn={navigateToSearchScreen} onFocus={() => { Keyboard.dismiss() }}>
+          </SearchBar>
+        </TouchableWithoutFeedback>
       </View>
 
 
@@ -247,8 +250,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     width: "85%",
-    left:'7.5%',
-    top:"5%"
+    left: '7.5%',
+    top: "5%"
   }
 });
 

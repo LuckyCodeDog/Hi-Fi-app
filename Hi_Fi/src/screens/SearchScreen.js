@@ -4,22 +4,35 @@ import WifiMarker from "../components/WifiMarker";
 import { useState } from "react";
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const SearchScreen = ({ route,navigation }) => {
+const SearchScreen = ({ route, navigation }) => {
     const { wifiList } = route.params
     // may need pass singal in later work
-    const [state, setState] = useState(wifiList)
+    const [wifis, setWifis] = useState(wifiList)
+    const [search, setSearch] = useState('')
+
+    const onSearchWifi = (value) => {
+        setSearch(value)
+        console.log("@@@@@@", value, typeof (value))
+        let filteredWifi = wifiList.filter((wifi) => {
+            return wifi.name.includes(value)
+        })
+        console.log(filteredWifi)
+        setWifis(filteredWifi)
+
+    }
 
     const renderItem = ({ item }) => (
-        <ListItem bottomDivider  onPress={()=>{ navigation.navigate("Find Wifi",{wifiId:item.id})}}>
+        <ListItem bottomDivider onPress={() => { navigation.navigate("Find Wifi", { wifiId: item.id }) }}>
             <WifiMarker ></WifiMarker>
             <ListItem.Content>
                 <ListItem.Title>{item.name}</ListItem.Title>
                 <ListItem.Subtitle></ListItem.Subtitle>
             </ListItem.Content>
-            <Icon  name="exclamation-circle" size={25}></Icon>
+            <Icon name="exclamation-circle" size={25}></Icon>
         </ListItem>
 
     )
+
     return (
         <View
             style={[
@@ -27,10 +40,10 @@ const SearchScreen = ({ route,navigation }) => {
 
             ]}>
             <View style={styles.searchBar}>
-                <SearchBar lightTheme={true} round={true} ></SearchBar>
+                <SearchBar lightTheme={true} round={true} value={search} onChangeText={onSearchWifi}></SearchBar>
             </View>
             <View style={{ flex: 1 }}>
-                <FlatList data={wifiList} renderItem={renderItem}>
+                <FlatList data={wifis} renderItem={renderItem}>
                 </FlatList>
             </View>
         </View>
