@@ -72,11 +72,11 @@ const FindWifiScreen = () => {
 
   let mapIndex = 0
   let mapAnimation = new Animated.Value(0)
+
   useEffect(
     () => {
       mapAnimation.addListener(
         ({ value }) => {
-
           let index = Math.floor(value / CARD_WIDTH + 0.3)
           if (index >= state.wifiList.length) {
             index = state.wifiList.length - 1
@@ -102,6 +102,7 @@ const FindWifiScreen = () => {
       )
     }
   )
+
   const data = [
     { key: '1', value: 'Mobiles', disabled: true },
     { key: '2', value: 'Appliances' },
@@ -111,6 +112,7 @@ const FindWifiScreen = () => {
     { key: '6', value: 'Diary Products' },
     { key: '7', value: 'Drinks' },
   ]
+
   // animation 
   const interpolations = state.wifiList.map((wifi, index) => {
     const inputRange = [
@@ -190,14 +192,11 @@ const FindWifiScreen = () => {
           { useNativeDriver: false }
         )}
       >
-
-
         {state.wifiList.map(
           (wifi, index) => (
             <WifiCard key={index} cardTitle={wifi.name}></WifiCard>
           )
         )}
-
       </Animated.ScrollView>
 
     </View >
