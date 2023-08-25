@@ -13,12 +13,12 @@ import {
   Keyboard,
   TouchableWithoutFeedback
 } from "react-native";
-import { SelectList } from 'react-native-dropdown-select-list';
-import MapView, { Marker } from 'react-native-maps';
+import MapView from 'react-native-maps';
 import WifiMapMarker from '../components/WifiMapMarker';
-import { SearchBar, Card, Input } from '@rneui/themed';
+import { SearchBar, Icon } from '@rneui/themed';
 import WifiCard from '../components/WifiCard';
 import { useRoute } from '@react-navigation/native';
+
 // set size
 const { width, height } = Dimensions.get("window")
 const CARD_HEIGHT = 220
@@ -181,10 +181,22 @@ const FindWifiScreen = ({ navigation }) => {
 
 
       <View style={styles.searchBar}>
-        <TouchableWithoutFeedback>
-          <SearchBar lightTheme={true} round={true} onPress={()=>{Keyboard.dismiss()}} onPressIn={navigateToSearchScreen} onFocus={() => { Keyboard.dismiss() }}>
-          </SearchBar>
-        </TouchableWithoutFeedback>
+     
+
+        <View style={{ flex: 5.5 }}>
+          <SearchBar style={{ width: '80%' }} lightTheme={true} inputContainerStyle={{ backgroundColor: "whitesmoke",backfaceVisibility:"hidden" }} round={true} onPress={() => { Keyboard.dismiss() }} onPressIn={navigateToSearchScreen} onFocus={() => { Keyboard.dismiss() }}></SearchBar>
+
+        </View>
+
+        <View style={{ flex: 1 }}>
+          <Icon
+            raised
+            name='heartbeat'
+            type='font-awesome'
+            color='#f50'
+            onPress={() => console.log('hello')} />
+        </View>
+
       </View>
 
 
@@ -245,9 +257,8 @@ const styles = StyleSheet.create({
   searchBar: {
     position: 'absolute',
     top: 0,
-    width: "85%",
-    left: '7.5%',
-    top: "5%"
+    width: "100%",
+    flexDirection: 'row'
   }
 });
 

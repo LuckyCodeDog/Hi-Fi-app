@@ -1,5 +1,5 @@
 import { SearchBar, ListItem, Avatar } from "@rneui/themed";
-import { View, StyleSheet, Text, SectionList, FlatList, } from "react-native";
+import { View, StyleSheet, Text, SectionList, FlatList,  } from "react-native";
 import WifiMarker from "../components/WifiMarker";
 import { useState } from "react";
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -37,10 +37,9 @@ const SearchScreen = ({ route, navigation }) => {
         <View
             style={[
                 styles.container,
-
             ]}>
-            <View style={styles.searchBar}>
-                <SearchBar lightTheme={true} round={true} value={search} onChangeText={onSearchWifi}></SearchBar>
+            <View >
+                <SearchBar  inputContainerStyle={{backgroundColor:'whitesmoke'}} containerStyle={{backfaceVisibility:"hidden",backgroundColor:'withe'}} lightTheme={true} round={true} value={search} onChangeText={onSearchWifi}></SearchBar>
             </View>
             <View style={{ flex: 1 }}>
                 <FlatList data={wifis} renderItem={renderItem}>
@@ -53,7 +52,8 @@ const SearchScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        opacity:1
     },
 });
 
