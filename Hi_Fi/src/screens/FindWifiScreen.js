@@ -184,19 +184,19 @@ const FindWifiScreen = ({ navigation }) => {
      
 
         <View style={{ flex: 5.5 }}>
-          <SearchBar style={{ width: '80%' }} lightTheme={true} inputContainerStyle={{ backgroundColor: "whitesmoke",backfaceVisibility:"hidden" }} round={true} onPress={() => { Keyboard.dismiss() }} onPressIn={navigateToSearchScreen} onFocus={() => { Keyboard.dismiss() }}></SearchBar>
+          <SearchBar style={{ width: '80%' }} lightTheme={true} inputContainerStyle={{ backgroundColor: "whitesmoke"}}  containerStyle={{backgroundColor:"white"}} round={true} onPress={() => { Keyboard.dismiss() }} onPressIn={navigateToSearchScreen} onFocus={() => { Keyboard.dismiss() }}></SearchBar>
 
         </View>
 
         <View style={{ flex: 1 }}>
           <Icon
             raised
-            name='heartbeat'
-            type='font-awesome'
-            color='#f50'
+            name='grid-view'
+            type='SimpleLineIcons'
+            color='blue'
             onPress={() => console.log('hello')} />
         </View>
-
+  
       </View>
 
 
@@ -258,7 +258,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     width: "100%",
-    flexDirection: 'row'
+    flexDirection: 'row',
+    backgroundColor:'white'
   }
 });
 
