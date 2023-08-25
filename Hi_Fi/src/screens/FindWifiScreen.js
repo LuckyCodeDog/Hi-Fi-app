@@ -82,22 +82,10 @@ const FindWifiScreen = ({ navigation }) => {
 
   let mapIndex = 0
   let mapAnimation = new Animated.Value(0)
-
-  //listen the wifiname from searchScreen and scroll to the card
-  useEffect(() => {
-    if (route.params !== undefined) {
-      let { wifiId } = route.params
-      let x = (wifiId * CARD_WIDTH - 40);
-      _scrollView.current.scrollTo({ x: x, y: 0, animated: true });
-    }
-  }, [route])
-
-
   useEffect(
     () => {
       mapAnimation.addListener(
         ({ value }) => {
-
           let index = Math.floor(value / CARD_WIDTH + 0.3)
           if (index >= state.wifiList.length) {
             index = state.wifiList.length - 1
@@ -123,8 +111,15 @@ const FindWifiScreen = ({ navigation }) => {
       )
     }
   )
-
-
+  const data = [
+    { key: '1', value: 'Mobiles', disabled: true },
+    { key: '2', value: 'Appliances' },
+    { key: '3', value: 'Cameras' },
+    { key: '4', value: 'Computers', disabled: true },
+    { key: '5', value: 'Vegetables' },
+    { key: '6', value: 'Diary Products' },
+    { key: '7', value: 'Drinks' },
+  ]
   // animation 
   const interpolations = state.wifiList.map((wifi, index) => {
     const inputRange = [
@@ -211,14 +206,11 @@ const FindWifiScreen = ({ navigation }) => {
           { useNativeDriver: false }
         )}
       >
-
-
         {state.wifiList.map(
           (wifi, index) => (
             <WifiCard key={index} cardTitle={wifi.name}></WifiCard>
           )
         )}
-
       </Animated.ScrollView>
 
     </View >
