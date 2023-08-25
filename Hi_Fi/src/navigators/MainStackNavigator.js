@@ -12,9 +12,11 @@ const MainStackNavigator = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
-      <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }} ></Stack.Screen>
+      <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }} >
+        <Stack.Screen name='SearchScreen' component={SearchScreen} options={{ headerShown: false }}></Stack.Screen>
+      </Stack.Screen>
       <Stack.Screen name='Main' component={BottomTabNavigator} options={{ headerShown: false }} ></Stack.Screen>
-      <Stack.Screen name='SearchScreen' component={SearchScreen} options={{headerShown:false}}></Stack.Screen>
+
     </Stack.Navigator>
   );
 };
