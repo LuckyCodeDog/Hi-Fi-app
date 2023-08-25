@@ -10,12 +10,15 @@ import {
   TouchableOpacity,
   Dimensions,
   Platform,
+  Keyboard,
+  TouchableWithoutFeedback
 } from "react-native";
 import { SelectList } from 'react-native-dropdown-select-list';
 import MapView, { Marker } from 'react-native-maps';
 import WifiMapMarker from '../components/WifiMapMarker';
 import { SearchBar, Card, Input } from '@rneui/themed';
 import WifiCard from '../components/WifiCard';
+import { useRoute } from '@react-navigation/native';
 // set size
 const { width, height } = Dimensions.get("window")
 const CARD_HEIGHT = 220
@@ -23,7 +26,7 @@ const CARD_WIDTH = width * 0.8
 const SPACE_FOR_CARD_INSET = CARD_WIDTH * 0.1 - 10
 const Padding = (width - CARD_WIDTH) / 2
 
-const FindWifiScreen = () => {
+const FindWifiScreen = ({ navigation }) => {
   // get from backend 
   const initData = {
     initialRegion: {
@@ -35,6 +38,7 @@ const FindWifiScreen = () => {
     //  get more info if needed
     wifiList: [
       {
+        id: 0,
         name: "wifi1",
         coordinate: {
           latitude: -43.64532061931982,
@@ -42,6 +46,7 @@ const FindWifiScreen = () => {
         }
       },
       {
+        id: 1,
         name: "wifi2",
         coordinate: {
           latitude: -43.64231213421989,
@@ -49,6 +54,7 @@ const FindWifiScreen = () => {
         }
       },
       {
+        id: 2,
         name: "wifi3",
         coordinate: {
           latitude: -43.64395447295253,
@@ -56,6 +62,7 @@ const FindWifiScreen = () => {
         }
       },
       {
+        id: 3,
         name: "wifi4",
         coordinate: {
           latitude: -43.647430468722135,
@@ -65,6 +72,9 @@ const FindWifiScreen = () => {
 
     ]
   }
+
+  const route = useRoute()
+
   const [state, setState] = useState(initData)
   const [search, setSearch] = useState(null)
   const _map = useRef(null)
@@ -76,7 +86,6 @@ const FindWifiScreen = () => {
     () => {
       mapAnimation.addListener(
         ({ value }) => {
-
           let index = Math.floor(value / CARD_WIDTH + 0.3)
           if (index >= state.wifiList.length) {
             index = state.wifiList.length - 1
@@ -129,30 +138,33 @@ const FindWifiScreen = () => {
 
   })
 
+
   const onPressMarker = (marker) => {
     const strID = marker.nativeEvent.id
+    console.log(strID)
     const markerID = parseInt(strID);
     let x = (markerID * CARD_WIDTH - 40);
     _scrollView.current.scrollTo({ x: x, y: 0, animated: true });
   }
 
-  const updateSearch = (search) => {
-    console.log(search)
+
+  // need to consider the scale
+  const getSearchData = () => {
+    const dataList = state.wifiList.map((wifi, index) => {
+      return { key: index, value: wifi.name }
+    })
+
+    return dataList
   }
 
-  // need to consider the distance 
-  const getSearchData = ()=>{
-      const dataList =  state.wifiList.map((wifi,index)=>{
-            return {key:index, value:wifi.name}
-        })
 
-      return dataList
+  const navigateToSearchScreen = () => {
+    navigation.navigate("SearchScreen", { wifiList: state.wifiList })
   }
+
 
   return (
-    <View
-      style={styles.container}
-    >
+    <View style={styles.container} >
 
       <MapView initialRegion={state.initialRegion}
         style={styles.map}
@@ -161,10 +173,14 @@ const FindWifiScreen = () => {
         {state.wifiList.map((wifi, index) => {
           return <WifiMapMarker key={index} id={index} coordinate={wifi.coordinate} color={interpolations[index].color} onPressMarker={onPressMarker} ></WifiMapMarker>
         })}
-
       </MapView>
+
+
       <View style={styles.searchBar}>
-        <SelectList data={getSearchData}    inputStyles={{fontSize:20}}  setSelected={(value)=>{setSearch(value)}}  save='key' dropdownStyles={{backgroundColor:"white",borderBlockColor:"blue",borderColor:'white'}} boxStyles={{backgroundColor:'white',borderColor:'white'}} ></SelectList>
+        <TouchableWithoutFeedback>
+          <SearchBar lightTheme={true} round={true} onPress={()=>{Keyboard.dismiss()}} onPressIn={navigateToSearchScreen} onFocus={() => { Keyboard.dismiss() }}>
+          </SearchBar>
+        </TouchableWithoutFeedback>
       </View>
 
 
@@ -190,14 +206,11 @@ const FindWifiScreen = () => {
           { useNativeDriver: false }
         )}
       >
-
-
         {state.wifiList.map(
           (wifi, index) => (
             <WifiCard key={index} cardTitle={wifi.name}></WifiCard>
           )
         )}
-
       </Animated.ScrollView>
 
     </View >
@@ -229,8 +242,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     width: "85%",
-    left:'7.5%',
-    top:"5%"
+    left: '7.5%',
+    top: "5%"
   }
 });
 
