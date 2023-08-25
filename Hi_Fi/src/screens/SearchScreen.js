@@ -22,7 +22,7 @@ const SearchScreen = ({ route, navigation }) => {
     }
 
     const renderItem = ({ item }) => (
-        <ListItem bottomDivider onPress={() => { navigation.navigate("Find Wifi", { wifiId: item.id }) }}>
+        <ListItem bottomDivider onPress={() => { navigation.navigate("findWifi", { wifiId: item.id }) }}>
             <WifiMarker ></WifiMarker>
             <ListItem.Content>
                 <ListItem.Title>{item.name}</ListItem.Title>

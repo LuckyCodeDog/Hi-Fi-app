@@ -5,6 +5,7 @@ import MyNodesScreen from '../screens/MyNodesScreen'
 import RewardsScreen from '../screens/RewardsScreen'
 import WalletScreen from '../screens/WalletScreen'
 import SettingScreen from '../screens/SettingScreen'
+import SearchNavigator from './SearchNavigator'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { StyleSheet } from 'react-native'
 
@@ -15,7 +16,7 @@ const Tab = createBottomTabNavigator()
 function BottomTabNavigator() {
 
     const tabs = [
-        {name:'Find Wifi', component : FindWifiScreen,icon: 'wifi'},
+        {name:'Find Wifi', component : SearchNavigator,icon: 'wifi'},
         {name: 'My Nodes', component:MyNodesScreen, icon:"globe"},
         {name:'Rewards', component:RewardsScreen, icon:'star'},
         {name:'Wallet', component:WalletScreen,icon:'credit-card'},
