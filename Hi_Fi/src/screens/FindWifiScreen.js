@@ -18,7 +18,8 @@ import WifiMapMarker from '../components/WifiMapMarker';
 import { SearchBar, Icon } from '@rneui/themed';
 import WifiCard from '../components/WifiCard';
 import { useRoute } from '@react-navigation/native';
-
+import Ionicons from "react-native-vector-icons/Ionicons"
+import AFIcon from 'react-native-vector-icons/FontAwesome'
 // set size
 const { width, height } = Dimensions.get("window")
 const CARD_HEIGHT = 220
@@ -166,6 +167,9 @@ const FindWifiScreen = ({ navigation }) => {
     navigation.navigate("SearchScreen", { wifiList: state.wifiList })
   }
 
+  const navigateToFilterScreen = ()=>{
+    navigation.navigate("FilterScreen")
+  }
 
   return (
     <View style={styles.container} >
@@ -181,22 +185,13 @@ const FindWifiScreen = ({ navigation }) => {
 
 
       <View style={styles.searchBar}>
-     
-
-        <View style={{ flex: 5.5 }}>
-          <SearchBar style={{ width: '80%' }} lightTheme={true} inputContainerStyle={{ backgroundColor: "whitesmoke"}}  containerStyle={{backgroundColor:"white"}} round={true} onPress={() => { Keyboard.dismiss() }} onPressIn={navigateToSearchScreen} onFocus={() => { Keyboard.dismiss() }}></SearchBar>
-
+        <View style={{ flex: 7 }}>
+          <SearchBar  lightTheme={true} inputContainerStyle={{ backgroundColor: "whitesmoke"}}  containerStyle={{backgroundColor:"white"}} round={true}  onPressIn={navigateToSearchScreen} ></SearchBar>
         </View>
-
         <View style={{ flex: 1 }}>
-          <Icon
-            raised
-            name='grid-view'
-            type='SimpleLineIcons'
-            color='blue'
-            onPress={() => console.log('hello')} />
+          <AFIcon name='list-ul' size={30} color={'blue'} style={{marginTop:10}} onPress={navigateToFilterScreen} ></AFIcon>
+          <Text style={{color:"blue"}}>Filter</Text>
         </View>
-  
       </View>
 
 
