@@ -10,12 +10,10 @@ import {
   TouchableOpacity,
   Dimensions,
   Platform,
-  Keyboard,
-  TouchableWithoutFeedback
 } from "react-native";
 import MapView from 'react-native-maps';
 import WifiMapMarker from '../components/WifiMapMarker';
-import { SearchBar, Icon } from '@rneui/themed';
+import { SearchBar, Dialog, CheckBox, Button } from '@rneui/themed';
 import WifiCard from '../components/WifiCard';
 import { useRoute } from '@react-navigation/native';
 import Ionicons from "react-native-vector-icons/Ionicons"
@@ -44,7 +42,8 @@ const FindWifiScreen = ({ navigation }) => {
         coordinate: {
           latitude: -43.64532061931982,
           longitude: 172.4642259485763
-        }
+        },
+        type: "Public Locations"
       },
       {
         id: 1,
@@ -52,7 +51,8 @@ const FindWifiScreen = ({ navigation }) => {
         coordinate: {
           latitude: -43.64231213421989,
           longitude: 172.47189882630357
-        }
+        },
+        type: "24/7"
       },
       {
         id: 2,
@@ -60,7 +60,8 @@ const FindWifiScreen = ({ navigation }) => {
         coordinate: {
           latitude: -43.64395447295253,
           longitude: 172.472956226081
-        }
+        },
+        type: "Cafe/Food"
       },
       {
         id: 3,
@@ -68,16 +69,30 @@ const FindWifiScreen = ({ navigation }) => {
         coordinate: {
           latitude: -43.647430468722135,
           longitude: 172.46338221035705
-        }
+        },
+        type: "Offices"
       },
 
     ]
   }
 
   const route = useRoute()
-
+  const types = ["Public Locations", "24/7", "Cafe/Food", "Offices"]
   const [state, setState] = useState(initData)
+  const [wifiList, setWifiList]= useState(initData.wifiList)
   const [search, setSearch] = useState(null)
+  const [filterVisible, setFilterVisible] = useState(false)
+  // hard code
+  const [filter, setFilter] = useState(types)
+  const [check1, setCheck1] = useState(true);
+  const publicLocation = check1 ? "Public Locations" : null
+  const [timeCheck, setTimeCheck] = useState(true)
+  const openTime = timeCheck ? "24/7" : null
+  const [cafeCheck, setCafeCheck] = useState(true)
+  const cafe = cafeCheck ? "Cafe/Food" : null
+  const [officeCheck, setOfficeCheck] = useState(true)
+  const offices = officeCheck?"Offices":null
+  const filterState = [publicLocation, openTime, cafe, offices]
   const _map = useRef(null)
   const _scrollView = useRef(null)
 
@@ -110,7 +125,7 @@ const FindWifiScreen = ({ navigation }) => {
             if (mapIndex != index) {
               mapIndex = index
             }
-            const { coordinate } = state.wifiList[mapIndex]
+            const { coordinate } = wifiList[mapIndex]
             _map.current.animateToRegion(
               {
                 ...coordinate,
@@ -126,7 +141,7 @@ const FindWifiScreen = ({ navigation }) => {
 
 
   // animation 
-  const interpolations = state.wifiList.map((wifi, index) => {
+  const interpolations = wifiList.map((wifi, index) => {
     const inputRange = [
       (index - 1) * CARD_WIDTH,
       index * CARD_WIDTH,
@@ -155,7 +170,7 @@ const FindWifiScreen = ({ navigation }) => {
 
   // need to consider the scale
   const getSearchData = () => {
-    const dataList = state.wifiList.map((wifi, index) => {
+    const dataList = wifiList.map((wifi, index) => {
       return { key: index, value: wifi.name }
     })
 
@@ -164,13 +179,20 @@ const FindWifiScreen = ({ navigation }) => {
 
 
   const navigateToSearchScreen = () => {
-    navigation.navigate("SearchScreen", { wifiList: state.wifiList })
+    navigation.navigate("SearchScreen", { wifiList: wifiList })
   }
 
-  const navigateToFilterScreen = ()=>{
-    navigation.navigate("FilterScreen")
+  const onSubmitFilter=()=>{
+   newlist= state.wifiList.filter((wifi)=>{
+
+      return filterState.includes(wifi.type)
+    
+    })
+    setWifiList(newlist)
+    setFilterVisible(!filterVisible)
   }
 
+  
   return (
     <View style={styles.container} >
 
@@ -178,7 +200,7 @@ const FindWifiScreen = ({ navigation }) => {
         style={styles.map}
         ref={_map}
       >
-        {state.wifiList.map((wifi, index) => {
+        {wifiList.map((wifi, index) => {
           return <WifiMapMarker key={index} id={index} coordinate={wifi.coordinate} color={interpolations[index].color} onPressMarker={onPressMarker} ></WifiMapMarker>
         })}
       </MapView>
@@ -186,11 +208,11 @@ const FindWifiScreen = ({ navigation }) => {
 
       <View style={styles.searchBar}>
         <View style={{ flex: 7 }}>
-          <SearchBar  lightTheme={true} inputContainerStyle={{ backgroundColor: "whitesmoke"}}  containerStyle={{backgroundColor:"white"}} round={true}  onPressIn={navigateToSearchScreen} ></SearchBar>
+          <SearchBar lightTheme={true} inputContainerStyle={{ backgroundColor: "whitesmoke" }} containerStyle={{ backgroundColor: "white" }} round={true} onPressIn={navigateToSearchScreen} ></SearchBar>
         </View>
         <View style={{ flex: 1 }}>
-          <AFIcon name='list-ul' size={30} color={'blue'} style={{marginTop:10}} onPress={navigateToFilterScreen} ></AFIcon>
-          <Text style={{color:"blue"}}>Filter</Text>
+          <AFIcon name='list-ul' size={30} color={'blue'} style={{ marginTop: 10 }} onPress={() => { setFilterVisible(!filterVisible) }} ></AFIcon>
+          <Text style={{ color: "blue" }}>Filter</Text>
         </View>
       </View>
 
@@ -217,13 +239,27 @@ const FindWifiScreen = ({ navigation }) => {
           { useNativeDriver: false }
         )}
       >
-        {state.wifiList.map(
+        {wifiList.map(
           (wifi, index) => (
             <WifiCard key={index} cardTitle={wifi.name}></WifiCard>
           )
         )}
       </Animated.ScrollView>
-
+    
+        <Dialog isVisible={filterVisible} onBackdropPress={onSubmitFilter} >
+          <Dialog.Title title='Filter' ></Dialog.Title>
+          <ScrollView style={{ width: "100%", height:"50%"}}>
+            <CheckBox title="Public Locations" checked={check1}
+              onPress={() => {
+                setCheck1(!check1)
+              }}></CheckBox>
+            <CheckBox title="24/7" checked={timeCheck} onPress={() => { 
+              setTimeCheck(!timeCheck) }}></CheckBox>
+            <CheckBox title="Cafe/Food" checked={cafeCheck} onPress={()=>{setCafeCheck(!cafeCheck)}}></CheckBox>
+            <CheckBox title="Office" checked={officeCheck} onPress={()=>{setOfficeCheck(!officeCheck)}}></CheckBox>
+          </ScrollView>
+          <Button title="Confirm" type='outline' onPress={onSubmitFilter} />
+        </Dialog>
     </View >
   );
 };
@@ -254,7 +290,7 @@ const styles = StyleSheet.create({
     top: 0,
     width: "100%",
     flexDirection: 'row',
-    backgroundColor:'white'
+    backgroundColor: 'white'
   }
 });
 
