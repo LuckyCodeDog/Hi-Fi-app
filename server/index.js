@@ -1,7 +1,13 @@
 const express = require('express');
 const app = express();
-const port = 3000; // 您可以选择任意未被占用的端口号
+const port = 3000;
 const sqlFn = require("./mysql")
+const cors =require("cors")
+app.use(cors({
+  origin: 'http://localhost:3000', 
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', 
+  credentials: true, 
+}));
 app.get('/', (req, res) => {
     const sql = 'SELECT * FROM WiFi_Routers'
     sqlFn(sql, [], (err, data) => {

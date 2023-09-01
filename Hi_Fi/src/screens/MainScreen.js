@@ -1,12 +1,15 @@
 
 // MainScreen.js
-import React from 'react';
+import React,{useEffect, useState} from 'react';
 import { View, Text, Button } from 'react-native';
+import axios from 'axios';
 
 const MainScreen = ({ navigation }) => {
+
+
   return (
     <View>
-      <Text>This is the Main Screen</Text>
+      <Text>{wifi}</Text>
       <Button
         title="Logout"
         onPress={() => navigation.navigate('Login')}
