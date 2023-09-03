@@ -18,6 +18,7 @@ import WifiCard from '../components/WifiCard';
 import { useRoute } from '@react-navigation/native';
 import Ionicons from "react-native-vector-icons/Ionicons"
 import AFIcon from 'react-native-vector-icons/FontAwesome'
+import axios from 'axios';
 // set size
 const { width, height } = Dimensions.get("window")
 const CARD_HEIGHT = 220
@@ -34,52 +35,13 @@ const FindWifiScreen = ({ navigation }) => {
       latitudeDelta: 0.015,
       longitudeDelta: 0.0221,
     },
-    //  get more info if needed
-    wifiList: [
-      {
-        id: 0,
-        name: "wifi1",
-        coordinate: {
-          latitude: -43.64532061931982,
-          longitude: 172.4642259485763
-        },
-        type: "Public Locations"
-      },
-      {
-        id: 1,
-        name: "wifi2",
-        coordinate: {
-          latitude: -43.64231213421989,
-          longitude: 172.47189882630357
-        },
-        type: "24/7"
-      },
-      {
-        id: 2,
-        name: "wifi3",
-        coordinate: {
-          latitude: -43.64395447295253,
-          longitude: 172.472956226081
-        },
-        type: "Cafe/Food"
-      },
-      {
-        id: 3,
-        name: "wifi4",
-        coordinate: {
-          latitude: -43.647430468722135,
-          longitude: 172.46338221035705
-        },
-        type: "Offices"
-      },
-
-    ]
+   
   }
 
   const route = useRoute()
   const types = ["Public Locations", "24/7", "Cafe/Food", "Offices"]
   const [state, setState] = useState(initData)
-  const [wifiList, setWifiList]= useState(initData.wifiList)
+  const [wifiList, setWifiList]= useState([])
   const [search, setSearch] = useState(null)
   const [filterVisible, setFilterVisible] = useState(false)
   // hard code
@@ -111,11 +73,23 @@ const FindWifiScreen = ({ navigation }) => {
 
   useEffect(
     () => {
+      axios.get("http://10.0.2.2:3030/api")
+      .then(res=>{
+          let josonWifi =  JSON.parse(res.data.records)
+          josonWifi=JSON.parse(josonWifi)
+          setWifiList(josonWifi)
+      })
+      .catch(err=>{
+        console.log("geting data error",err)
+      })
+    }
+  ,[])
+    useEffect(()=>{
       mapAnimation.addListener(
         ({ value }) => {
           let index = Math.floor(value / CARD_WIDTH + 0.3)
-          if (index >= state.wifiList.length) {
-            index = state.wifiList.length - 1
+          if (index >= wifiList.length) {
+            index = wifiList.length - 1
           }
           if (index < 0) {
             index = 0
@@ -136,9 +110,7 @@ const FindWifiScreen = ({ navigation }) => {
           }, 100)
         }
       )
-    }
-  )
-
+    })
 
   // animation 
   const interpolations = wifiList.map((wifi, index) => {
@@ -201,7 +173,7 @@ const FindWifiScreen = ({ navigation }) => {
         ref={_map}
       >
         {wifiList.map((wifi, index) => {
-          return <WifiMapMarker key={index} id={index} coordinate={wifi.coordinate} color={interpolations[index].color} onPressMarker={onPressMarker} ></WifiMapMarker>
+          return <WifiMapMarker key={index} id={index}  coordinate={wifi.coordinate} color={interpolations[index].color} onPressMarker={onPressMarker} ></WifiMapMarker>
         })}
       </MapView>
 
@@ -241,7 +213,7 @@ const FindWifiScreen = ({ navigation }) => {
       >
         {wifiList.map(
           (wifi, index) => (
-            <WifiCard key={index} cardTitle={wifi.name}></WifiCard>
+            <WifiCard key={index} cardTitle={wifi.router_name}></WifiCard>
           )
         )}
       </Animated.ScrollView>

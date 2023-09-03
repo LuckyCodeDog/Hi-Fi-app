@@ -4,12 +4,9 @@ import {View,StyleSheet,Animated} from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
 const WifiMapMarker =(props) =>{
-  useEffect(()=>{
-    // console.log(props.id)
-    // console.log(props.coordinate)
-  })
+
   return (
-    <Marker  identifier ={props.id==undefined?null:props.id.toString()} coordinate={props.coordinate} onPress={props.onPressMarker}>
+    <Marker   identifier ={props.id==undefined?null:props.id.toString()} coordinate={props.coordinate} onPress={props.onPressMarker}>
       <Animated.View  style={[styles.view,{backgroundColor:props.color}]}  > 
         <Icon name='wifi' size={25} color={"white"} style={styles.icon} ></Icon>
       </Animated.View>
