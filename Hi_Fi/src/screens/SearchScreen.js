@@ -14,7 +14,7 @@ const SearchScreen = ({ route, navigation }) => {
         setSearch(value)
         console.log("@@@@@@", value, typeof (value))
         let filteredWifi = wifiList.filter((wifi) => {
-            return wifi.name.includes(value)
+            return wifi.router_name.includes(value)
         })
         console.log(filteredWifi)
         setWifis(filteredWifi)
@@ -22,10 +22,10 @@ const SearchScreen = ({ route, navigation }) => {
     }
 
     const renderItem = ({ item }) => (
-        <ListItem bottomDivider onPress={() => { navigation.navigate("findWifi", { wifiId: item.id }) }}>
+        <ListItem bottomDivider onPress={() => { navigation.navigate("findWifi", { wifiId: item.router_id }) }}>
             <WifiMarker ></WifiMarker>
             <ListItem.Content>
-                <ListItem.Title>{item.name}</ListItem.Title>
+                <ListItem.Title>{item.router_name}</ListItem.Title>
                 <ListItem.Subtitle></ListItem.Subtitle>
             </ListItem.Content>
             <Icon name="exclamation-circle" size={25}></Icon>

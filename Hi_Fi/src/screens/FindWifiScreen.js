@@ -37,11 +37,73 @@ const FindWifiScreen = ({ navigation }) => {
     },
    
   }
+  const backupData =  [
+    {
+        coordinate: {latitude: -43.64397272242113, longitude: 172.45931671074345},
+        elastic_ip: "192.168.1.100",
+        ip_address: "192.168.1.1",
+        last_seen: "2023-08-21T02:00:00.000Z",
+        mac_address: "00:11:22:33:44:55",
+        router_id: 20000,
+        router_name: "Router A",
+        security_type: "WPA2",
+        signal_strength: 90,
+        type:"Public Locations"
+    },
+    {
+        coordinate: {latitude: -43.64757346558215, longitude: 172.46311855995506},
+        elastic_ip: "192.168.1.101",
+        ip_address: "192.168.1.2",
+        last_seen: "2023-08-21T03:30:00.000Z",
+        mac_address: "AA:BB:CC:DD:EE:FF",
+        router_id: 20001,
+        router_name: "Router B",
+        security_type: "WPA",
+        signal_strength: 80,
+        type:"Public Locations"
+    },
+    {
+        coordinate: {latitude: -43.64282796733643,  longitude: 172.46878322112332},
+        elastic_ip: "192.168.1.102",
+        ip_address: "192.168.1.3",
+        last_seen: "2023-08-21T04:45:00.000Z",
+        mac_address: "11:22:33:44:55:66",
+        router_id: 20002,
+        router_name: "Router C",
+        security_type: "WEP",
+        signal_strength: 70,
+        type:"24/7"
+    },
+    {
+        coordinate: {"latitude": -43.64135085289721,  "longitude": 172.46495582860095},
+        elastic_ip: "192.168.1.103",
+        ip_address: "192.168.1.4",
+        last_seen: "2023-08-21T05:30:00.000Z",
+        mac_address: "A1:B2:C3:D4:E5:F6",
+        router_id: 20003,
+        router_name: "Router D",
+        security_type: "WPA2",
+        signal_strength: 85,
+        type:"Cafe/Food"
+    },
+    {
+        coordinate: {latitude: -43.64400972936753, longitude: 172.46834951664258},
+        elastic_ip: "192.168.1.104",
+        ip_address: "192.168.1.5",
+        last_seen: "2023-08-21T06:15:00.000Z",
+        mac_address: "1A:2B:3C:4D:5E:6F",
+        router_id: 20004,
+        router_name: "Router E",
+        security_type: "WPA",
+        signal_strength: 75,
+        type:"Offices"
+    }
+]
 
   const route = useRoute()
   const types = ["Public Locations", "24/7", "Cafe/Food", "Offices"]
   const [state, setState] = useState(initData)
-  const [wifiList, setWifiList]= useState([])
+  const [wifiList, setWifiList]= useState(backupData)
   const [search, setSearch] = useState(null)
   const [filterVisible, setFilterVisible] = useState(false)
   // hard code
@@ -70,20 +132,25 @@ const FindWifiScreen = ({ navigation }) => {
     }
   }, [route])
 
-
-  useEffect(
-    () => {
-      axios.get("http://10.0.2.2:3030/api")
-      .then(res=>{
-          let josonWifi =  JSON.parse(res.data.records)
-          josonWifi=JSON.parse(josonWifi)
-          setWifiList(josonWifi)
-      })
-      .catch(err=>{
-        console.log("geting data error",err)
-      })
-    }
-  ,[])
+  
+ 
+  // useEffect(()=>{
+  //   setWifiList(backupData)
+  // })
+  // useEffect(
+  //   () => {
+  //     axios.get("http://10.0.2.2:3030/api")
+  //     .then(res=>{
+  //         let josonWifi =  JSON.parse(res.data.records)
+  //         josonWifi=JSON.parse(josonWifi)
+  //         setWifiList(josonWifi)
+  //         console.log(josonWifi)
+  //     })
+  //     .catch(err=>{
+  //       console.log("geting data error",err)
+  //     })
+  //   }
+  // ,[])
     useEffect(()=>{
       mapAnimation.addListener(
         ({ value }) => {
@@ -155,12 +222,15 @@ const FindWifiScreen = ({ navigation }) => {
   }
 
   const onSubmitFilter=()=>{
-   newlist= state.wifiList.filter((wifi)=>{
-
+    console.log("@@1",filterState)
+   newlist= backupData.filter((wifi)=>{
+      console.log(filterState.includes(wifi.type))
       return filterState.includes(wifi.type)
     
     })
     setWifiList(newlist)
+    console.log("@@@3",newlist)
+    
     setFilterVisible(!filterVisible)
   }
 
