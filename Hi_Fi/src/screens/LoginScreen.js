@@ -1,11 +1,11 @@
 // LoginScreen.js
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image,StyleSheet } from 'react-native';
-
+import logoImg from '../Assets/imgs/logo.png'
 const LoginScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Image source={require('/Users/alexliu/Desktop/Apllied computing/nomadnodes-app/Hi-Fi-app/Hi_Fi/src/components/logo.png')} style={styles.logo} />
+      <Image source={logoImg} style={styles.logo} />
       <Text style={styles.header}>Welcome to Nomadnodes</Text>
 
       <TextInput

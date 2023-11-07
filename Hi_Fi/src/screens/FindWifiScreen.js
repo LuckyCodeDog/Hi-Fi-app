@@ -10,15 +10,15 @@ import {
   TouchableOpacity,
   Dimensions,
   Platform,
-  Keyboard,
-  TouchableWithoutFeedback
 } from "react-native";
-import { SelectList } from 'react-native-dropdown-select-list';
-import MapView, { Marker } from 'react-native-maps';
+import MapView from 'react-native-maps';
 import WifiMapMarker from '../components/WifiMapMarker';
-import { SearchBar, Card, Input } from '@rneui/themed';
+import { SearchBar, Dialog, CheckBox, Button } from '@rneui/themed';
 import WifiCard from '../components/WifiCard';
 import { useRoute } from '@react-navigation/native';
+import Ionicons from "react-native-vector-icons/Ionicons"
+import AFIcon from 'react-native-vector-icons/FontAwesome'
+import axios from 'axios';
 // set size
 const { width, height } = Dimensions.get("window")
 const CARD_HEIGHT = 220
@@ -35,60 +35,128 @@ const FindWifiScreen = ({ navigation }) => {
       latitudeDelta: 0.015,
       longitudeDelta: 0.0221,
     },
-    //  get more info if needed
-    wifiList: [
-      {
-        id: 0,
-        name: "wifi1",
-        coordinate: {
-          latitude: -43.64532061931982,
-          longitude: 172.4642259485763
-        }
-      },
-      {
-        id: 1,
-        name: "wifi2",
-        coordinate: {
-          latitude: -43.64231213421989,
-          longitude: 172.47189882630357
-        }
-      },
-      {
-        id: 2,
-        name: "wifi3",
-        coordinate: {
-          latitude: -43.64395447295253,
-          longitude: 172.472956226081
-        }
-      },
-      {
-        id: 3,
-        name: "wifi4",
-        coordinate: {
-          latitude: -43.647430468722135,
-          longitude: 172.46338221035705
-        }
-      },
-
-    ]
+   
   }
+  const backupData =  [
+    {
+        coordinate: {latitude: -43.64397272242113, longitude: 172.45931671074345},
+        elastic_ip: "192.168.1.100",
+        ip_address: "192.168.1.1",
+        last_seen: "2023-08-21T02:00:00.000Z",
+        mac_address: "00:11:22:33:44:55",
+        router_id: 20000,
+        router_name: "Router A",
+        security_type: "WPA2",
+        signal_strength: 90,
+        type:"Public Locations"
+    },
+    {
+        coordinate: {latitude: -43.64757346558215, longitude: 172.46311855995506},
+        elastic_ip: "192.168.1.101",
+        ip_address: "192.168.1.2",
+        last_seen: "2023-08-21T03:30:00.000Z",
+        mac_address: "AA:BB:CC:DD:EE:FF",
+        router_id: 20001,
+        router_name: "Router B",
+        security_type: "WPA",
+        signal_strength: 80,
+        type:"Public Locations"
+    },
+    {
+        coordinate: {latitude: -43.64282796733643,  longitude: 172.46878322112332},
+        elastic_ip: "192.168.1.102",
+        ip_address: "192.168.1.3",
+        last_seen: "2023-08-21T04:45:00.000Z",
+        mac_address: "11:22:33:44:55:66",
+        router_id: 20002,
+        router_name: "Router C",
+        security_type: "WEP",
+        signal_strength: 70,
+        type:"24/7"
+    },
+    {
+        coordinate: {"latitude": -43.64135085289721,  "longitude": 172.46495582860095},
+        elastic_ip: "192.168.1.103",
+        ip_address: "192.168.1.4",
+        last_seen: "2023-08-21T05:30:00.000Z",
+        mac_address: "A1:B2:C3:D4:E5:F6",
+        router_id: 20003,
+        router_name: "Router D",
+        security_type: "WPA2",
+        signal_strength: 85,
+        type:"Cafe/Food"
+    },
+    {
+        coordinate: {latitude: -43.64400972936753, longitude: 172.46834951664258},
+        elastic_ip: "192.168.1.104",
+        ip_address: "192.168.1.5",
+        last_seen: "2023-08-21T06:15:00.000Z",
+        mac_address: "1A:2B:3C:4D:5E:6F",
+        router_id: 20004,
+        router_name: "Router E",
+        security_type: "WPA",
+        signal_strength: 75,
+        type:"Offices"
+    }
+]
 
   const route = useRoute()
-
+  const types = ["Public Locations", "24/7", "Cafe/Food", "Offices"]
   const [state, setState] = useState(initData)
+  const [wifiList, setWifiList]= useState(backupData)
   const [search, setSearch] = useState(null)
+  const [filterVisible, setFilterVisible] = useState(false)
+  // hard code
+  const [filter, setFilter] = useState(types)
+  const [check1, setCheck1] = useState(true);
+  const publicLocation = check1 ? "Public Locations" : null
+  const [timeCheck, setTimeCheck] = useState(true)
+  const openTime = timeCheck ? "24/7" : null
+  const [cafeCheck, setCafeCheck] = useState(true)
+  const cafe = cafeCheck ? "Cafe/Food" : null
+  const [officeCheck, setOfficeCheck] = useState(true)
+  const offices = officeCheck?"Offices":null
+  const filterState = [publicLocation, openTime, cafe, offices]
   const _map = useRef(null)
   const _scrollView = useRef(null)
 
   let mapIndex = 0
   let mapAnimation = new Animated.Value(0)
-  useEffect(
-    () => {
+
+  //listen the wifiname from searchScreen and scroll to the card
+  useEffect(() => {
+    if (route.params !== undefined) {
+      let { wifiId } = route.params
+      let x = (wifiId * CARD_WIDTH - 40);
+      _scrollView.current.scrollTo({ x: x, y: 0, animated: true });
+    }
+  }, [route])
+
+  
+ 
+  // useEffect(()=>{
+  //   setWifiList(backupData)
+  // })
+  // useEffect(
+  //   () => {
+  //     axios.get("http://10.0.2.2:3030/api")
+  //     .then(res=>{
+  //         let josonWifi =  JSON.parse(res.data.records)
+  //         josonWifi=JSON.parse(josonWifi)
+  //         setWifiList(josonWifi)
+  //         console.log(josonWifi)
+  //     })
+  //     .catch(err=>{
+  //       console.log("geting data error",err)
+  //     })
+  //   }
+  // ,[])
+    useEffect(()=>{
       mapAnimation.addListener(
         ({ value }) => {
           let index = Math.floor(value / CARD_WIDTH + 0.3)
-          if (index >= state.wifiList.length) {
-            index = state.wifiList.length - 1
+          if (index >= wifiList.length) {
+            index = wifiList.length - 1
           }
           if (index < 0) {
             index = 0
@@ -98,7 +166,7 @@ const FindWifiScreen = ({ navigation }) => {
             if (mapIndex != index) {
               mapIndex = index
             }
-            const { coordinate } = state.wifiList[mapIndex]
+            const { coordinate } = wifiList[mapIndex]
             _map.current.animateToRegion(
               {
                 ...coordinate,
@@ -109,19 +177,10 @@ const FindWifiScreen = ({ navigation }) => {
           }, 100)
         }
       )
-    }
-  )
-  const data = [
-    { key: '1', value: 'Mobiles', disabled: true },
-    { key: '2', value: 'Appliances' },
-    { key: '3', value: 'Cameras' },
-    { key: '4', value: 'Computers', disabled: true },
-    { key: '5', value: 'Vegetables' },
-    { key: '6', value: 'Diary Products' },
-    { key: '7', value: 'Drinks' },
-  ]
+    })
+
   // animation 
-  const interpolations = state.wifiList.map((wifi, index) => {
+  const interpolations = wifiList.map((wifi, index) => {
     const inputRange = [
       (index - 1) * CARD_WIDTH,
       index * CARD_WIDTH,
@@ -150,7 +209,7 @@ const FindWifiScreen = ({ navigation }) => {
 
   // need to consider the scale
   const getSearchData = () => {
-    const dataList = state.wifiList.map((wifi, index) => {
+    const dataList = wifiList.map((wifi, index) => {
       return { key: index, value: wifi.name }
     })
 
@@ -159,10 +218,23 @@ const FindWifiScreen = ({ navigation }) => {
 
 
   const navigateToSearchScreen = () => {
-    navigation.navigate("SearchScreen", { wifiList: state.wifiList })
+    navigation.navigate("SearchScreen", { wifiList: wifiList })
   }
 
+  const onSubmitFilter=()=>{
+    console.log("@@1",filterState)
+   newlist= backupData.filter((wifi)=>{
+      console.log(filterState.includes(wifi.type))
+      return filterState.includes(wifi.type)
+    
+    })
+    setWifiList(newlist)
+    console.log("@@@3",newlist)
+    
+    setFilterVisible(!filterVisible)
+  }
 
+  
   return (
     <View style={styles.container} >
 
@@ -170,17 +242,20 @@ const FindWifiScreen = ({ navigation }) => {
         style={styles.map}
         ref={_map}
       >
-        {state.wifiList.map((wifi, index) => {
-          return <WifiMapMarker key={index} id={index} coordinate={wifi.coordinate} color={interpolations[index].color} onPressMarker={onPressMarker} ></WifiMapMarker>
+        {wifiList.map((wifi, index) => {
+          return <WifiMapMarker key={index} id={index}  coordinate={wifi.coordinate} color={interpolations[index].color} onPressMarker={onPressMarker} ></WifiMapMarker>
         })}
       </MapView>
 
 
       <View style={styles.searchBar}>
-        <TouchableWithoutFeedback>
-          <SearchBar lightTheme={true} round={true} onPress={()=>{Keyboard.dismiss()}} onPressIn={navigateToSearchScreen} onFocus={() => { Keyboard.dismiss() }}>
-          </SearchBar>
-        </TouchableWithoutFeedback>
+        <View style={{ flex: 7 }}>
+          <SearchBar lightTheme={true} inputContainerStyle={{ backgroundColor: "whitesmoke" }} containerStyle={{ backgroundColor: "white" }} round={true} onPressIn={navigateToSearchScreen} ></SearchBar>
+        </View>
+        <View style={{ flex: 1 }}>
+          <AFIcon name='list-ul' size={30} color={'blue'} style={{ marginTop: 10 }} onPress={() => { setFilterVisible(!filterVisible) }} ></AFIcon>
+          <Text style={{ color: "blue" }}>Filter</Text>
+        </View>
       </View>
 
 
@@ -206,13 +281,27 @@ const FindWifiScreen = ({ navigation }) => {
           { useNativeDriver: false }
         )}
       >
-        {state.wifiList.map(
+        {wifiList.map(
           (wifi, index) => (
-            <WifiCard key={index} cardTitle={wifi.name}></WifiCard>
+            <WifiCard key={index} cardTitle={wifi.router_name}></WifiCard>
           )
         )}
       </Animated.ScrollView>
-
+    
+        <Dialog isVisible={filterVisible} onBackdropPress={onSubmitFilter} >
+          <Dialog.Title title='Filter' ></Dialog.Title>
+          <ScrollView style={{ width: "100%", height:"50%"}}>
+            <CheckBox title="Public Locations" checked={check1}
+              onPress={() => {
+                setCheck1(!check1)
+              }}></CheckBox>
+            <CheckBox title="24/7" checked={timeCheck} onPress={() => { 
+              setTimeCheck(!timeCheck) }}></CheckBox>
+            <CheckBox title="Cafe/Food" checked={cafeCheck} onPress={()=>{setCafeCheck(!cafeCheck)}}></CheckBox>
+            <CheckBox title="Office" checked={officeCheck} onPress={()=>{setOfficeCheck(!officeCheck)}}></CheckBox>
+          </ScrollView>
+          <Button title="Confirm" type='outline' onPress={onSubmitFilter} />
+        </Dialog>
     </View >
   );
 };
@@ -241,9 +330,9 @@ const styles = StyleSheet.create({
   searchBar: {
     position: 'absolute',
     top: 0,
-    width: "85%",
-    left: '7.5%',
-    top: "5%"
+    width: "100%",
+    flexDirection: 'row',
+    backgroundColor: 'white'
   }
 });
 
